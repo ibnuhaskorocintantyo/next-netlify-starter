@@ -12,11 +12,12 @@ export default function Home() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords
+          console.log("Latitude:", latitude, "Longitude:", longitude);  // Log untuk memeriksa koordinat
           setLocation(`Latitude: ${latitude}, Longitude: ${longitude}`)
-          // Membuat link Google Maps berdasarkan koordinat
           setMapLink(`https://www.google.com/maps?q=${latitude},${longitude}`)
         },
         (error) => {
+          console.error(error);  // Log error jika ada masalah
           alert("Gagal mendapatkan lokasi: " + error.message)
         }
       )
