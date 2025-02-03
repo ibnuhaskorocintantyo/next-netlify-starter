@@ -1,8 +1,27 @@
 import Head from 'next/head'
 import Header from '@components/Header'
 import Footer from '@components/Footer'
+import { useState } from 'react'
 
 export default function Home() {
+  const [location, setLocation] = useState(null)
+
+  const handleTrack = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          setLocation(`Latitude: ${latitude}, Longitude: ${longitude}`)
+        },
+        (error) => {
+          alert("Gagal mendapatkan lokasi: " + error.message)
+        }
+      )
+    } else {
+      alert("Geolocation tidak didukung oleh browser ini.")
+    }
+  }
+
   return (
     <div className="container">
       <Head>
@@ -38,11 +57,18 @@ export default function Home() {
               borderRadius: '4px',
               cursor: 'pointer'
             }}
-            onClick={() => alert('Lacak Resi')}
+            onClick={handleTrack}
           >
             Lacak
           </button>
         </div>
+
+        {/* Menampilkan lokasi jika tersedia */}
+        {location && (
+          <div style={{ marginTop: '20px', fontSize: '16px' }}>
+            <p><strong>Lokasi Anda:</strong> {location}</p>
+          </div>
+        )}
       </main>
 
       <Footer />
