@@ -1,97 +1,92 @@
-import Head from 'next/head'
-import Header from '@components/Header'
-import Footer from '@components/Footer'
-import { useState } from 'react'
+import Head from 'next/head';
+import Header from '@components/Header';
+import Footer from '@components/Footer';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [location, setLocation] = useState(null)
-  const [mapLink, setMapLink] = useState(null)
+  const [resi, setResi] = useState('');
+  const [location, setLocation] = useState(null);
 
-  const handleTrack = () => {
+  useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords
-          console.log("Latitude:", latitude, "Longitude:", longitude);  // Log untuk memeriksa koordinat
-          setLocation(`Latitude: ${latitude}, Longitude: ${longitude}`)
-          setMapLink(`https://www.google.com/maps?q=${latitude},${longitude}`)
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
         },
         (error) => {
-          console.error(error);  // Log error jika ada masalah
-          alert("Gagal mendapatkan lokasi: " + error.message)
+          console.error("Error mendapatkan lokasi: ", error);
         }
-      )
+      );
     } else {
-      alert("Geolocation tidak didukung oleh browser ini.")
+      console.error("Geolocation tidak didukung oleh browser ini.");
     }
-  }
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Melacak paket dengan nomor resi: ${resi}`);
+  };
 
   return (
     <div className="container">
       <Head>
-        <title>JNT</title>
+        <title>JNT Tracking - Cek Resi Mudah</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <Header title="Selamat Datang Di JNT" />
-        {/* Input box untuk resi dengan inline styles */}
-        <div style={{ marginTop: '20px' }}>
-          <label htmlFor="resi" style={{ fontSize: '16px' }}>Masukkan Nomor Resi:</label>
-          <input
-            type="text"
-            id="resi"
-            name="resi"
-            placeholder="Contoh: 123456789"
-            style={{
-              padding: '10px',
-              marginRight: '10px',
-              fontSize: '16px',
-              width: '200px',
-              border: '1px solid #ccc',
-              borderRadius: '4px'
-            }}
-          />
-          <button
-            style={{
-              padding: '10px 15px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-            onClick={handleTrack}
-          >
-            Lacak
-          </button>
-        </div>
-
-        {/* Menampilkan lokasi dan link ke Google Maps jika tersedia */}
+        <Header title="Selamat datang di JNT Tracking" />
+        <p className="description">Masukkan nomor resi untuk melacak paket Anda.</p>
+        
         {location && (
-          <div style={{ marginTop: '20px', fontSize: '16px' }}>
-            <p><strong>Lokasi Anda:</strong> {location}</p>
-            <a
-              href={mapLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-block',
-                marginTop: '10px',
-                padding: '10px 15px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                borderRadius: '4px',
-                textDecoration: 'none'
-              }}
-            >
-              Buka di Google Maps
-            </a>
-          </div>
+          <p className="location-info">
+            Lokasi Anda: Latitude {location.latitude}, Longitude {location.longitude}
+          </p>
         )}
+        
+        <form onSubmit={handleSubmit} className="tracking-form">
+          <input 
+            type="text" 
+            placeholder="Masukkan nomor resi" 
+            value={resi} 
+            onChange={(e) => setResi(e.target.value)} 
+            className="resi-input"
+          />
+          <button type="submit" className="btn-track">Lacak</button>
+        </form>
       </main>
 
       <Footer />
+
+      <style jsx>{`
+        .tracking-form {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        .resi-input {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          flex: 1;
+        }
+        .btn-track {
+          background-color: #0070f3;
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .location-info {
+          margin-top: 10px;
+          font-size: 14px;
+          color: #333;
+        }
+      `}</style>
     </div>
-  )
+  );
 }
