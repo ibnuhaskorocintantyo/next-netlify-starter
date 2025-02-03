@@ -6,16 +6,12 @@ export default function Home() {
   return (
     <div className="container">
       <Head>
-        <title>Next.js Starter!</title>
+        <title>JNT</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <Header title="Selamat Datang Di JNT" />
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
         {/* Input box untuk resi dengan inline styles */}
         <div style={{ marginTop: '20px' }}>
           <label htmlFor="resi" style={{ fontSize: '16px' }}>Masukkan Nomor Resi:</label>
