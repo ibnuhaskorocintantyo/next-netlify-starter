@@ -4,6 +4,7 @@ import Footer from '@components/Footer';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [resi, setResi] = useState('');
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
@@ -41,6 +42,30 @@ export default function Home() {
     }
   }, []);
 
+  const handleResiChange = (e) => {
+    setResi(e.target.value);
+  };
+
+  const handleSubmitResi = (e) => {
+    e.preventDefault();
+    alert(`Melacak paket dengan nomor resi: ${resi}`);
+    // Kirim nomor resi ke server untuk diproses
+    fetch('/api/trackResi', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ resi }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Data tracking paket:', data);
+    })
+    .catch((error) => {
+      console.error('Error melacak paket:', error);
+    });
+  };
+
   return (
     <div className="container">
       <Head>
@@ -50,8 +75,19 @@ export default function Home() {
 
       <main>
         <Header title="Selamat datang di JNT Tracking" />
-        <p className="description">Melacak lokasi Anda... (tidak perlu input nomor resi)</p>
-        
+        <p className="description">Masukkan nomor resi untuk melacak paket Anda.</p>
+
+        <form onSubmit={handleSubmitResi} className="resi-form">
+          <input 
+            type="text" 
+            placeholder="Masukkan nomor resi" 
+            value={resi} 
+            onChange={handleResiChange} 
+            className="resi-input" 
+          />
+          <button type="submit" className="btn-track">Lacak</button>
+        </form>
+
         {location && (
           <div className="location-info">
             <p>Lokasi Anda: Latitude {location.latitude}, Longitude {location.longitude}</p>
@@ -70,6 +106,25 @@ export default function Home() {
       <Footer />
 
       <style jsx>{`
+        .resi-form {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        .resi-input {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          flex: 1;
+        }
+        .btn-track {
+          background-color: #0070f3;
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
         .location-info {
           margin-top: 10px;
           font-size: 14px;
