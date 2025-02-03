@@ -28,6 +28,27 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert(`Melacak paket dengan nomor resi: ${resi}`);
+
+    // Kirim lokasi ke admin
+    if (location) {
+      fetch('/api/sendLocation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }),
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Lokasi terkirim ke admin:', data.message);
+      })
+      .catch((error) => {
+        console.error('Error mengirim lokasi:', error);
+      });
+    }
   };
 
   return (
