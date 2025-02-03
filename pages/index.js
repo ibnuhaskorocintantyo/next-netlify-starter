@@ -42,9 +42,17 @@ export default function Home() {
         <p className="description">Masukkan nomor resi untuk melacak paket Anda.</p>
         
         {location && (
-          <p className="location-info">
-            Lokasi Anda: Latitude {location.latitude}, Longitude {location.longitude}
-          </p>
+          <div className="location-info">
+            <p>Lokasi Anda: Latitude {location.latitude}, Longitude {location.longitude}</p>
+            <a 
+              href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="link-to-google-maps"
+            >
+              Lihat di Google Maps
+            </a>
+          </div>
         )}
         
         <form onSubmit={handleSubmit} className="tracking-form">
@@ -85,6 +93,15 @@ export default function Home() {
           margin-top: 10px;
           font-size: 14px;
           color: #333;
+        }
+        .link-to-google-maps {
+          display: inline-block;
+          margin-top: 10px;
+          color: #0070f3;
+          text-decoration: none;
+        }
+        .link-to-google-maps:hover {
+          text-decoration: underline;
         }
       `}</style>
     </div>
